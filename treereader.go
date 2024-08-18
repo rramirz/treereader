@@ -14,10 +14,17 @@ func TreeReader(rootDir string, ignoreFilenames, selectFilenames map[string]stru
 		if err != nil {
 			return err
 		}
+
+		// Skip .git directory and its contents
+		if info.IsDir() && info.Name() == ".git" {
+			return filepath.SkipDir
+		}
+
 		relativePath, err := filepath.Rel(rootDir, path)
 		if err != nil {
 			return err
 		}
+
 		if !info.IsDir() {
 			if info.Mode()&0o111 != 0 {
 				return nil
